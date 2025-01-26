@@ -1,35 +1,31 @@
-package com.example.formulariokotlin.features.navigation
+package com.example.formulariokotlin.navigation
 
-// Importaciones necesarias
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.formulariokotlin.core.AuthViewModel
 import com.example.formulariokotlin.features.login.ui.LoginScreen
 import com.example.formulariokotlin.features.register.ui.RegisterScreen
 import com.example.formulariokotlin.features.tasks.ui.MarketScreen
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(authViewModel: AuthViewModel = viewModel()) {
     val navController = rememberNavController()
-
-    // Guardamos el token en un estado mutable local
-    var token by remember { mutableStateOf<String?>(null) }
+    val token by authViewModel.token.collectAsState()
 
     NavHost(navController = navController, startDestination = "login") {
         // Ruta para la pantalla de Login
         composable("login") {
             LoginScreen(
                 onLoginSuccess = { receivedToken ->
-                    // Actualizamos el token en el estado local
-                    token = receivedToken
-                    // Navegamos a la pantalla de Market
+                    authViewModel.setToken(receivedToken) // Almacenar el token en AuthViewModel
                     navController.navigate("market") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
                 onGoToRegister = {
-                    // Navegamos a la pantalla de Registro
                     navController.navigate("register")
                 }
             )
@@ -39,13 +35,11 @@ fun AppNavHost() {
         composable("register") {
             RegisterScreen(
                 onRegisterSuccess = {
-                    // Después de registrarse, navegamos de vuelta a Login
                     navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
                 },
                 onGoToLogin = {
-                    // Navegamos de vuelta a Login
                     navController.popBackStack()
                 }
             )
@@ -55,13 +49,12 @@ fun AppNavHost() {
         composable("market") {
             MarketScreen(
                 onLogout = {
-                    // Al cerrar sesión, limpiamos el token y navegamos a Login
-                    token = null
+                    authViewModel.clearToken() // Limpiar el token al cerrar sesión
                     navController.navigate("login") {
                         popUpTo("market") { inclusive = true }
                     }
                 },
-                token = token ?: ""
+                token = token ?: "" // Pasar el token almacenado
             )
         }
     }

@@ -1,4 +1,3 @@
-// features/tasks/data/models/Task.kt
 package com.example.formulariokotlin.features.tasks.data.models
 
 data class Task(

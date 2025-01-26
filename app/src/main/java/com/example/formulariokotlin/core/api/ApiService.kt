@@ -46,7 +46,7 @@ class ApiService {
                             LoginResponse(
                                 success = jsonResponse.optBoolean("success", false),
                                 message = jsonResponse.optString("message", "No message"),
-                                token = jsonResponse.optString("token", null)
+                                token = jsonResponse.optString("token", null.toString())
                             )
                         )
                     } else {

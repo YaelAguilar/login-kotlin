@@ -1,4 +1,4 @@
-// features/tasks/viewmodel/TaskViewModel.kt
+// TaskViewModel.kt
 package com.example.formulariokotlin.features.tasks.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -45,7 +45,7 @@ class TaskViewModel : ViewModel() {
             _uiState.value = TaskUIState.Loading
             repository.createTask(token, title, content)
                 .onSuccess { newTask ->
-                    _tasks.value = _tasks.value + newTask
+                    _tasks.value += newTask
                     _uiState.value = TaskUIState.Success("Tarea creada!")
                 }
                 .onFailure { ex ->

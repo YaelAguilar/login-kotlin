@@ -1,31 +1,43 @@
 package com.example.formulariokotlin.ui.theme
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val Orange = Color(0xFFFF6D00)
-val OrangeDark = Color(0xFFC75A00)
-val DarkGray = Color(0xFF121212)
-
-private val DarkColorPalette = darkColorScheme(
+private val DarkColorScheme = darkColorScheme(
     primary = Orange,
-    secondary = OrangeDark,
+    secondary = DarkGray,
     background = DarkGray,
-    surface = DarkGray,
+    surface = Color(0xFF333333),
     onPrimary = Color.White,
     onSecondary = Color.White,
     onBackground = Color.White,
     onSurface = Color.White
 )
 
+private val LightColorScheme = lightColorScheme(
+    primary = Orange,
+    secondary = Color.Gray,
+    background = Color.White,
+    surface = Color(0xFFF5F5F5),
+    onPrimary = Color.Black,
+    onSecondary = Color.Black,
+    onBackground = Color.Black,
+    onSurface = Color.Black
+)
+
 @Composable
-fun DarkOrangeTheme(content: @Composable () -> Unit) {
+fun FormularioKotlinTheme(
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (useDarkTheme) DarkColorScheme else LightColorScheme
+
     MaterialTheme(
-        colorScheme = DarkColorPalette,
-        typography = Typography(),
+        colorScheme = colors,
+        typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }

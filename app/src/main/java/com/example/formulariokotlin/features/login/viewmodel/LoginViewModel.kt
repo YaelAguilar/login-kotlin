@@ -20,7 +20,7 @@ class LoginViewModel : ViewModel() {
             repository.login(email, password)
                 .onSuccess { response ->
                     if (response.success) {
-                        _loginState.value = LoginState.Success(response.message)
+                        _loginState.value = LoginState.Success(response.message, response.token)
                     } else {
                         _loginState.value = LoginState.Error(response.message)
                     }
@@ -31,7 +31,6 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    // Para resetear el estado y no re-disparar toasts
     fun resetLoginState() {
         _loginState.value = LoginState.Idle
     }

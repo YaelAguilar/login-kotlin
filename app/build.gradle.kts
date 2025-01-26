@@ -41,7 +41,6 @@ android {
 
 dependencies {
 
-    // 3Dependencias ya existentes
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -56,7 +55,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
 
-    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,8 +63,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // ***** Añadimos la librería foundation para "clickable", "background", etc. *****
     implementation(libs.androidx.foundation)
-
-    // (Opcional) Si deseas la BOM de Compose en tu toml, ya lo tienes con `platform(libs.androidx.compose.bom)`
+    implementation(libs.androidx.material.icons.extended.vversion)
 }
