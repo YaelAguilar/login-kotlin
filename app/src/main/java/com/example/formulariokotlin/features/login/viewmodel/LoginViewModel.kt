@@ -17,21 +17,22 @@ class LoginViewModel : ViewModel() {
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
-
             repository.login(email, password)
                 .onSuccess { response ->
-                    _loginState.value = LoginState.Success(response.message)
+                    if (response.success) {
+                        _loginState.value = LoginState.Success(response.message)
+                    } else {
+                        _loginState.value = LoginState.Error(response.message)
+                    }
                 }
                 .onFailure { exception ->
                     _loginState.value = LoginState.Error(exception.message ?: "Unknown error")
                 }
         }
     }
-}
 
-sealed class LoginState {
-    data object Idle : LoginState()
-    data object Loading : LoginState()
-    data class Success(val message: String) : LoginState()
-    data class Error(val message: String) : LoginState()
+    // Para resetear el estado y no re-disparar toasts
+    fun resetLoginState() {
+        _loginState.value = LoginState.Idle
+    }
 }

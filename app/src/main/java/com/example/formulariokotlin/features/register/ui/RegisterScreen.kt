@@ -1,5 +1,4 @@
-// LoginScreen.kt
-package com.example.formulariokotlin.features.login.ui
+package com.example.formulariokotlin.features.register.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -20,35 +19,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.formulariokotlin.features.login.viewmodel.LoginState
-import com.example.formulariokotlin.features.login.viewmodel.LoginViewModel
+import com.example.formulariokotlin.features.register.viewmodel.RegisterState
+import com.example.formulariokotlin.features.register.viewmodel.RegisterViewModel
 import com.example.formulariokotlin.ui.theme.DarkGray
 import com.example.formulariokotlin.ui.theme.Orange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel = viewModel(),
-    onLoginSuccess: (Any?) -> Unit, // Sin parámetros
-    onGoToRegister: () -> Unit
+fun RegisterScreen(
+    viewModel: RegisterViewModel = viewModel(),
+    onRegisterSuccess: () -> Unit,
+    onGoToLogin: () -> Unit
 ) {
     val context = LocalContext.current
-    val loginState by viewModel.loginState.collectAsState()
+    val registerState by viewModel.registerState.collectAsState()
 
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Manejo de toasts con side-effect
-    LaunchedEffect(loginState) {
-        when (loginState) {
-            is LoginState.Success -> {
-                Toast.makeText(context, (loginState as LoginState.Success).message, Toast.LENGTH_SHORT).show()
-                onLoginSuccess()
-                viewModel.resetLoginState()
+    LaunchedEffect(registerState) {
+        when (registerState) {
+            is RegisterState.Success -> {
+                Toast.makeText(context, (registerState as RegisterState.Success).message, Toast.LENGTH_SHORT).show()
+                onRegisterSuccess()
+                viewModel.resetRegisterState()
             }
-            is LoginState.Error -> {
-                Toast.makeText(context, (loginState as LoginState.Error).message, Toast.LENGTH_LONG).show()
-                viewModel.resetLoginState()
+            is RegisterState.Error -> {
+                Toast.makeText(context, (registerState as RegisterState.Error).message, Toast.LENGTH_LONG).show()
+                viewModel.resetRegisterState()
             }
             else -> {}
         }
@@ -65,40 +64,50 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Inicio de Sesión",
+                text = "Registro",
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Inicia sesión con tu cuenta de FNC.",
+                text = "Crea tu cuenta de FNC.",
                 fontSize = 14.sp,
                 color = Color.LightGray
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(text = "Email", color = Color.White, fontWeight = FontWeight.SemiBold)
-
-            // OutlinedTextField con parámetros actualizados
+            Text(text = "Nombre", color = Color.White, fontWeight = FontWeight.SemiBold)
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                placeholder = {
-                    Text("correo@gmail.com", color = Color.Gray)
-                },
+                value = name,
+                onValueChange = { name = it },
+                placeholder = { Text("Tu nombre", color = Color.Gray) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Orange,
                     unfocusedBorderColor = Orange,
                     cursorColor = Orange,
-
-                    // En Compose Material3, "textColor" no existe;
-                    // usamos "focusedTextColor", "unfocusedTextColor", etc.
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.Gray
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                    // Para el placeholder:
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = "Email", color = Color.White, fontWeight = FontWeight.SemiBold)
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = { Text("correo@gmail.com", color = Color.Gray) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Orange,
+                    unfocusedBorderColor = Orange,
+                    cursorColor = Orange,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
                     focusedPlaceholderColor = Color.Gray,
                     unfocusedPlaceholderColor = Color.Gray
                 ),
@@ -111,9 +120,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = {
-                    Text("Ingrese su contraseña", color = Color.Gray)
-                },
+                placeholder = { Text("Crea tu contraseña", color = Color.Gray) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Orange,
                     unfocusedBorderColor = Orange,
@@ -129,7 +136,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.login(email, password) },
+                onClick = { viewModel.register(name, email, password) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -138,20 +145,20 @@ fun LoginScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text(text = "Inicia sesión", fontWeight = FontWeight.Bold)
+                Text(text = "Registrar", fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                Text(text = "¿No tienes cuenta? ", color = Color.LightGray)
+                Text(text = "¿Ya tienes cuenta? ", color = Color.LightGray)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "Regístrate",
+                    text = "Inicia sesión",
                     color = Orange,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.clickable {
-                        onGoToRegister()
+                        onGoToLogin()
                     }
                 )
             }
