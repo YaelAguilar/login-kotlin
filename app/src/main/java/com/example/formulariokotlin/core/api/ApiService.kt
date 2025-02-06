@@ -20,7 +20,7 @@ class ApiService {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    private val baseUrl = "http://192.168.100.17:3000"
+    private val baseUrl = "http://34.235.130.255:3000"
 
     suspend fun login(email: String, password: String): Result<LoginResponse> =
         withContext(Dispatchers.IO) {

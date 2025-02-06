@@ -68,7 +68,7 @@ fun MarketScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Market") },
+                title = { Text("Market", style = MaterialTheme.typography.titleLarge) },
                 actions = {
                     IconButton(onClick = { onLogout() }) {
                         Icon(
@@ -91,79 +91,94 @@ fun MarketScreen(
                 containerColor = Orange,
                 contentColor = Color.White
             ) {
-                Text("+")
+                Text("+", style = MaterialTheme.typography.bodyLarge)
+            }
+        },
+        bottomBar = {
+            Surface(
+                tonalElevation = 4.dp,
+                shadowElevation = 4.dp,
+                color = DarkGray
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Button(
+                        onClick = { onOpenTextRecognition() },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Orange,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Escanear Texto",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
             }
         },
         content = { paddingValues ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(DarkGray)
                     .padding(paddingValues)
             ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    if (tasks.isEmpty()) {
-                        Text(
-                            text = "No hay tareas disponibles.",
-                            color = LightGray,
-                            fontSize = 16.sp,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    } else {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            contentPadding = PaddingValues(8.dp),
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(tasks.size) { index ->
-                                val task = tasks[index]
-                                TaskCard(
-                                    task = task,
-                                    onClick = { showDetailDialog = task },
-                                    onLongClick = { showLongPressMenu = task }
-                                )
-                            }
-                        }
-                    }
-
-                    when (uiState) {
-                        is TaskUIState.Loading -> {
-                            CircularProgressIndicator(
-                                color = Color.White,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .wrapContentSize(Alignment.Center)
+                if (tasks.isEmpty()) {
+                    Text(
+                        text = "No hay tareas disponibles.",
+                        color = LightGray,
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(8.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(tasks.size) { index ->
+                            val task = tasks[index]
+                            TaskCard(
+                                task = task,
+                                onClick = { showDetailDialog = task },
+                                onLongClick = { showLongPressMenu = task }
                             )
                         }
-                        is TaskUIState.Success -> {
-                            val msg = (uiState as TaskUIState.Success).message
-                            LaunchedEffect(msg) {
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                taskViewModel.resetUIState()
-                            }
-                        }
-                        is TaskUIState.Error -> {
-                            val errorMsg = (uiState as TaskUIState.Error).message
-                            LaunchedEffect(errorMsg) {
-                                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
-                                taskViewModel.resetUIState()
-                            }
-                        }
-                        else -> {}
                     }
                 }
-                // Botón nuevo para invocar el reconocimiento de texto
-                Button(
-                    onClick = { onOpenTextRecognition() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Orange,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(text = "Escanear Texto", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+
+                when (uiState) {
+                    is TaskUIState.Loading -> {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
+                    is TaskUIState.Success -> {
+                        val msg = (uiState as TaskUIState.Success).message
+                        LaunchedEffect(msg) {
+                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                            taskViewModel.resetUIState()
+                        }
+                    }
+                    is TaskUIState.Error -> {
+                        val errorMsg = (uiState as TaskUIState.Error).message
+                        LaunchedEffect(errorMsg) {
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                            taskViewModel.resetUIState()
+                        }
+                    }
+                    else -> {}
                 }
             }
         }
