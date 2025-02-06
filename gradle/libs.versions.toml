@@ -4,6 +4,7 @@ agp = "8.7.3"
 androidxComposeBom = "2025.01.00"
 androidxLifecycleViewmodelCompose = "2.5.1"
 androidxMaterialIconsExtended = "<version>"
+cameraView = "1.4.1"
 coilCompose = "2.2.2"
 coilComposeVersion = "2.4.0"
 coilKtCoilCompose = "2.1.0"
@@ -32,9 +33,13 @@ okhttp = "4.11.0"
 navigationCompose = "2.8.5"
 okhttpVersion = "4.10.0"
 squareupOkhttp = "4.9.3"
+textRecognition = "16.0.1"
 
 [libraries]
 androidx-activity-compose-v172 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraView" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraView" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
 androidx-compose-bom-v20231000 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-compose-bom-v20250100 = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation-foundation = { module = "androidx.compose.foundation:foundation" }
@@ -77,6 +82,7 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 okhttp-v4100 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion" }
 okhttp-v493 = { module = "com.squareup.okhttp3:okhttp", version.ref = "squareupOkhttp" }
+text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "textRecognition" }
 ui = { module = "androidx.compose.ui:ui" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }

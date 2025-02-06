@@ -26,12 +26,14 @@ import com.example.formulariokotlin.features.tasks.data.models.Task
 import com.example.formulariokotlin.features.tasks.viewmodel.TaskUIState
 import com.example.formulariokotlin.features.tasks.viewmodel.TaskViewModel
 import com.example.formulariokotlin.ui.theme.DarkGray
+import com.example.formulariokotlin.ui.theme.LightGray
 import com.example.formulariokotlin.ui.theme.Orange
 
 @Composable
 fun MarketScreen(
     onLogout: () -> Unit,
     token: String,
+    onOpenTextRecognition: () -> Unit,
     taskViewModel: TaskViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -93,60 +95,75 @@ fun MarketScreen(
             }
         },
         content = { paddingValues ->
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(DarkGray)
                     .padding(paddingValues)
             ) {
-                if (tasks.isEmpty()) {
-                    Text(
-                        text = "No hay tareas disponibles.",
-                        color = Color.LightGray,
-                        fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(8.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(tasks.size) { index ->
-                            val task = tasks[index]
-                            TaskCard(
-                                task = task,
-                                onClick = { showDetailDialog = task },
-                                onLongClick = { showLongPressMenu = task }
+                Box(modifier = Modifier.weight(1f)) {
+                    if (tasks.isEmpty()) {
+                        Text(
+                            text = "No hay tareas disponibles.",
+                            color = LightGray,
+                            fontSize = 16.sp,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(8.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(tasks.size) { index ->
+                                val task = tasks[index]
+                                TaskCard(
+                                    task = task,
+                                    onClick = { showDetailDialog = task },
+                                    onLongClick = { showLongPressMenu = task }
+                                )
+                            }
+                        }
+                    }
+
+                    when (uiState) {
+                        is TaskUIState.Loading -> {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .wrapContentSize(Alignment.Center)
                             )
                         }
+                        is TaskUIState.Success -> {
+                            val msg = (uiState as TaskUIState.Success).message
+                            LaunchedEffect(msg) {
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                taskViewModel.resetUIState()
+                            }
+                        }
+                        is TaskUIState.Error -> {
+                            val errorMsg = (uiState as TaskUIState.Error).message
+                            LaunchedEffect(errorMsg) {
+                                Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                                taskViewModel.resetUIState()
+                            }
+                        }
+                        else -> {}
                     }
                 }
-
-                when (uiState) {
-                    is TaskUIState.Loading -> {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .wrapContentSize(Alignment.Center)
-                        )
-                    }
-                    is TaskUIState.Success -> {
-                        val msg = (uiState as TaskUIState.Success).message
-                        LaunchedEffect(msg) {
-                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                            taskViewModel.resetUIState()
-                        }
-                    }
-                    is TaskUIState.Error -> {
-                        val errorMsg = (uiState as TaskUIState.Error).message
-                        LaunchedEffect(errorMsg) {
-                            Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
-                            taskViewModel.resetUIState()
-                        }
-                    }
-                    else -> {}
+                // Botón nuevo para invocar el reconocimiento de texto
+                Button(
+                    onClick = { onOpenTextRecognition() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Orange,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Escanear Texto", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             }
         }
@@ -318,7 +335,6 @@ fun DeleteConfirmationDialog(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOrEditTaskDialog(
     titleDialog: String,

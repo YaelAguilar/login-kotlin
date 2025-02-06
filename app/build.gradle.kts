@@ -41,6 +41,11 @@ android {
 
 dependencies {
 
+    implementation(libs.text.recognition)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

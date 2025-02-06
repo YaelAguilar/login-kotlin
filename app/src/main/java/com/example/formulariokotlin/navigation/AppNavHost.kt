@@ -9,6 +9,7 @@ import com.example.formulariokotlin.core.AuthViewModel
 import com.example.formulariokotlin.features.login.ui.LoginScreen
 import com.example.formulariokotlin.features.register.ui.RegisterScreen
 import com.example.formulariokotlin.features.tasks.ui.MarketScreen
+import com.example.formulariokotlin.features.textrecognition.ui.TextRecognitionScreen
 
 @Composable
 fun AppNavHost(authViewModel: AuthViewModel = viewModel()) {
@@ -54,7 +55,17 @@ fun AppNavHost(authViewModel: AuthViewModel = viewModel()) {
                         popUpTo("market") { inclusive = true }
                     }
                 },
-                token = token ?: "" // Pasar el token almacenado
+                token = token ?: "",
+                onOpenTextRecognition = {
+                    navController.navigate("text_recognition")
+                }
+            )
+        }
+
+        // Ruta para reconocimiento de texto
+        composable("text_recognition") {
+            TextRecognitionScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }
